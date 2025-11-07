@@ -7,7 +7,7 @@ import { FavoritesProvider } from '@/contexts/FavoritesContext';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Pokédex Interativa - Explore o Mundo Pokémon',
+  title: 'Top Pokédex',
   description: 'Uma pokédex moderna e interativa com busca, filtros, favoritos e criação de pokémons customizados. Explore, descubra e colecione!',
   keywords: ['pokemon', 'pokedex', 'interactive', 'search', 'favorites', 'custom'],
   authors: [{ name: 'Matheus Luz' }],

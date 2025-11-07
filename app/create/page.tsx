@@ -3,24 +3,10 @@
 import { useEffect } from 'react';
 import { Header } from '@/components/layout/Header';
 import { PokemonForm } from '@/components/forms/PokemonForm';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useTheme } from '@/hooks/useTheme';
 
 export default function CreatePokemon() {
-  const [theme, setTheme] = useLocalStorage<'light' | 'dark'>('theme', 'light');
-
-  // Apply theme to document
-  useEffect(() => {
-    const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme(prev => prev === 'light' ? 'dark' : 'light');
-  };
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">

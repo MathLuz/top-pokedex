@@ -13,10 +13,10 @@ import { PokemonGrid } from '@/components/pokemon/PokemonGrid';
 import { PokemonDetail } from '@/components/pokemon/PokemonDetail';
 import { PokemonPagination } from '@/components/pokemon/PokemonPagination';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useTheme } from '@/hooks/useTheme';
 
 export default function Favorites() {
-  const [theme, setTheme] = useLocalStorage<'light' | 'dark'>('theme', 'light');
+  const { theme, toggleTheme } = useTheme();
   const [favoritePokemons, setFavoritePokemons] = useState<PokemonCardData[]>([]);
   const [selectedPokemon, setSelectedPokemon] = useState<PokemonDetailData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -31,20 +31,6 @@ export default function Favorites() {
   const [itemsPerPage, setItemsPerPage] = useState(16);
 
   const { favorites } = useFavorites();
-
-  // Apply theme to document
-  useEffect(() => {
-    const root = document.documentElement;
-    if (theme === 'dark') {
-      root.classList.add('dark');
-    } else {
-      root.classList.remove('dark');
-    }
-  }, [theme]);
-
-  const toggleTheme = () => {
-    setTheme(prev => prev === 'light' ? 'dark' : 'light');
-  };
 
   // Load favorite pokemons
   useEffect(() => {
