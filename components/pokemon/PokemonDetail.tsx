@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { X, Heart, Ruler, Weight } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { faCaretRight, faSearch } from '@fortawesome/free-solid-svg-icons';
 import { PokemonDetailData } from '@/types/pokemon';
 import { PokemonAPI } from '@/lib/api/pokemon';
 import { formatPokemonName, formatPokemonId, getTypeColor } from '@/lib/utils/pokemon';
@@ -16,9 +16,10 @@ interface PokemonDetailProps {
   pokemon: PokemonDetailData | null;
   onClose?: () => void;
   isMobile?: boolean;
+  onSelectPokemon?: (pokemonId: number) => void;
 }
 
-export function PokemonDetail({ pokemon, onClose, isMobile = false }: PokemonDetailProps) {
+export function PokemonDetail({ pokemon, onClose, isMobile = false, onSelectPokemon }: PokemonDetailProps) {
   const { isFavorite, toggleFavorite } = useFavorites();
   const [evolutionChain, setEvolutionChain] = useState<string[]>([]);
   const [isLoadingEvolution, setIsLoadingEvolution] = useState(false);
@@ -188,26 +189,40 @@ export function PokemonDetail({ pokemon, onClose, isMobile = false }: PokemonDet
                 <LoadingSpinner size="md" />
               </div>
             ) : evolutionChain.length > 0 ? (
-              <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                 {evolutionChain.map((evolution, index) => (
-                  <div key={evolution} className="flex items-center">
-                    <span
-                      className={cn(
-                        'px-3 py-2 rounded-lg text-sm font-medium',
-                        evolution.toLowerCase() === pokemon.name.toLowerCase()
-                          ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 ring-2 ring-blue-500'
-                          : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300'
-                      )}
-                    >
-                      {formatPokemonName(evolution)}
-                    </span>
-                    {index < evolutionChain.length - 1 && (
-                      <span className="mx-2 text-gray-400 dark:text-gray-500">→</span>
+                  <div key={evolution} className="flex items-center gap-2">
+                  <button
+                    onClick={async () => {
+                    if (evolution.toLowerCase() !== pokemon.name.toLowerCase() && onSelectPokemon) {
+                      try {
+                        const evolutionPokemon = await PokemonAPI.getPokemon(evolution);
+                        onSelectPokemon(evolutionPokemon.id);
+                      } catch (error) {
+                        console.error('Failed to load evolution pokemon:', error);
+                      }
+                    }
+                    }}
+                    disabled={evolution.toLowerCase() === pokemon.name.toLowerCase()}
+                    className={cn(
+                    'px-3 py-2 rounded-lg text-sm font-medium transition-all',
+                    evolution.toLowerCase() === pokemon.name.toLowerCase()
+                      ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 ring-2 ring-blue-500 cursor-default'
+                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 hover:ring-2 hover:ring-blue-400 cursor-pointer'
                     )}
+                  >
+                    {formatPokemonName(evolution)}
+                  </button>
+                  {index < evolutionChain.length - 1 && (
+                    <FontAwesomeIcon 
+                    icon={faCaretRight} 
+                    className="text-gray-400 dark:text-gray-500"
+                    />
+                  )}
                   </div>
                 ))}
-              </div>
-            ) : (
+                </div>
+              ) : (
               <p className="text-gray-500 dark:text-gray-400 text-sm">
                 Não possui evolução
               </p>

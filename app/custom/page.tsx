@@ -4,8 +4,9 @@ import { useState, useEffect, useMemo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPalette, faStar } from '@fortawesome/free-solid-svg-icons';
 import { CustomPokemonAPI } from '@/lib/api/custom-pokemon';
+import { PokemonAPI } from '@/lib/api/pokemon';
 import { PokemonCardData, PokemonDetailData, CustomPokemon } from '@/types/pokemon';
-import { convertCustomPokemonToCard, convertCustomPokemonToDetail } from '@/lib/utils/pokemon';
+import { convertCustomPokemonToCard, convertCustomPokemonToDetail, convertPokemonToDetail } from '@/lib/utils/pokemon';
 import { useFavorites } from '@/hooks/useFavorites';
 import { Header } from '@/components/layout/Header';
 import { PokemonSearch } from '@/components/pokemon/PokemonSearch';
@@ -146,6 +147,22 @@ export default function CustomPokemons() {
     }
   };
 
+  // Handle pokemon selection by ID (for evolution chain clicks) - custom pokemons don't have evolution
+  const handlePokemonSelectById = async (pokemonId: number) => {
+    if (selectedPokemon?.id === pokemonId) return;
+    
+    try {
+      setIsLoadingDetail(true);
+      const pokemonData = await PokemonAPI.getPokemon(pokemonId);
+      const detailData = convertPokemonToDetail(pokemonData);
+      setSelectedPokemon(detailData);
+    } catch (error) {
+      console.error('Failed to load pokemon details:', error);
+    } finally {
+      setIsLoadingDetail(false);
+    }
+  };
+
   // Handle delete request
   const handleDeleteRequest = (pokemon: PokemonCardData) => {
     setPokemonToDelete(pokemon);
@@ -266,6 +283,7 @@ export default function CustomPokemons() {
                     pokemon={pokemon}
                     onClick={() => handlePokemonSelect(pokemon)}
                     onDelete={() => handleDeleteRequest(pokemon)}
+                    isSelected={selectedPokemon?.id === pokemon.id}
                   />
                 ))}
               </div>
@@ -301,7 +319,10 @@ export default function CustomPokemons() {
                   <LoadingSpinner size="lg" />
                 </div>
               ) : (
-                <PokemonDetail pokemon={selectedPokemon} />
+                <PokemonDetail 
+                  pokemon={selectedPokemon} 
+                  onSelectPokemon={handlePokemonSelectById}
+                />
               )}
             </div>
           </div>
@@ -315,6 +336,7 @@ export default function CustomPokemons() {
             pokemon={selectedPokemon}
             onClose={() => setSelectedPokemon(null)}
             isMobile
+            onSelectPokemon={handlePokemonSelectById}
           />
         </div>
       )}

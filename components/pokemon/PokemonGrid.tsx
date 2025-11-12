@@ -10,9 +10,10 @@ interface PokemonGridProps {
   pokemons: PokemonCardData[];
   onPokemonClick: (pokemon: PokemonCardData) => void;
   className?: string;
+  selectedPokemonId?: number | null;
 }
 
-export function PokemonGrid({ pokemons, onPokemonClick, className }: PokemonGridProps) {
+export function PokemonGrid({ pokemons, onPokemonClick, className, selectedPokemonId }: PokemonGridProps) {
   if (pokemons.length === 0) {
     return (
       <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
@@ -27,7 +28,7 @@ export function PokemonGrid({ pokemons, onPokemonClick, className }: PokemonGrid
 
   return (
     <div className={cn(
-      'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4',
+      'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-1',
       className
     )}>
       {pokemons.map((pokemon) => (
@@ -35,6 +36,7 @@ export function PokemonGrid({ pokemons, onPokemonClick, className }: PokemonGrid
           key={`${pokemon.isCustom ? 'custom' : 'api'}-${pokemon.id}`}
           pokemon={pokemon}
           onClick={() => onPokemonClick(pokemon)}
+          isSelected={selectedPokemonId === pokemon.id}
         />
       ))}
     </div>

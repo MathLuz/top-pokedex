@@ -12,9 +12,10 @@ interface CustomPokemonCardProps {
   onClick?: () => void;
   onDelete?: () => void;
   className?: string;
+  isSelected?: boolean;
 }
 
-export function CustomPokemonCard({ pokemon, onClick, onDelete, className }: CustomPokemonCardProps) {
+export function CustomPokemonCard({ pokemon, onClick, onDelete, className, isSelected = false }: CustomPokemonCardProps) {
   const { isFavorite, toggleFavorite } = useFavorites();
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
@@ -31,6 +32,8 @@ export function CustomPokemonCard({ pokemon, onClick, onDelete, className }: Cus
     <div
       className={cn(
         'group relative bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 hover:-translate-y-1',
+        isSelected ? 'ring-2 ring-blue-500 z-30 animate-tilt-3d' : 'z-10',
+        'hover:!z-50',
         className
       )}
       onClick={onClick}

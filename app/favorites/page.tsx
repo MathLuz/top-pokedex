@@ -138,6 +138,22 @@ export default function Favorites() {
     }
   };
 
+  // Handle pokemon selection by ID (for evolution chain clicks)
+  const handlePokemonSelectById = async (pokemonId: number) => {
+    if (selectedPokemon?.id === pokemonId) return;
+    
+    try {
+      setIsLoadingDetail(true);
+      const pokemonData = await PokemonAPI.getPokemon(pokemonId);
+      const detailData = convertPokemonToDetail(pokemonData);
+      setSelectedPokemon(detailData);
+    } catch (error) {
+      console.error('Failed to load pokemon details:', error);
+    } finally {
+      setIsLoadingDetail(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
@@ -216,6 +232,7 @@ export default function Favorites() {
               <PokemonGrid
                 pokemons={currentPokemons}
                 onPokemonClick={handlePokemonSelect}
+                selectedPokemonId={selectedPokemon?.id}
               />
 
               {/* Pagination */}
@@ -238,7 +255,10 @@ export default function Favorites() {
                   <LoadingSpinner size="lg" />
                 </div>
               ) : (
-                <PokemonDetail pokemon={selectedPokemon} />
+                <PokemonDetail 
+                  pokemon={selectedPokemon} 
+                  onSelectPokemon={handlePokemonSelectById}
+                />
               )}
             </div>
           </div>
@@ -252,6 +272,7 @@ export default function Favorites() {
             pokemon={selectedPokemon}
             onClose={() => setSelectedPokemon(null)}
             isMobile
+            onSelectPokemon={handlePokemonSelectById}
           />
         </div>
       )}

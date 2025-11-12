@@ -273,6 +273,22 @@ export default function Home() {
     }
   };
 
+  // Handle pokemon selection by ID (for evolution chain clicks)
+  const handlePokemonSelectById = async (pokemonId: number) => {
+    if (selectedPokemon?.id === pokemonId) return;
+    
+    try {
+      setIsLoadingDetail(true);
+      const pokemonData = await PokemonAPI.getPokemon(pokemonId);
+      const detailData = convertPokemonToDetail(pokemonData);
+      setSelectedPokemon(detailData);
+    } catch (error) {
+      console.error('Failed to load pokemon details:', error);
+    } finally {
+      setIsLoadingDetail(false);
+    }
+  };
+
   return (
     <div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900">
       <Header theme={theme} toggleTheme={toggleTheme} />
@@ -345,6 +361,7 @@ export default function Home() {
                     <PokemonGrid
                       pokemons={currentPokemons}
                       onPokemonClick={handlePokemonSelect}
+                      selectedPokemonId={selectedPokemon?.id}
                     />
 
                     {/* Pagination */}
@@ -393,7 +410,10 @@ export default function Home() {
                 </div>
               ) : (
                 <div className="sticky top-0">
-                  <PokemonDetail pokemon={selectedPokemon} />
+                  <PokemonDetail 
+                    pokemon={selectedPokemon} 
+                    onSelectPokemon={handlePokemonSelectById}
+                  />
                 </div>
               )}
             </div>
@@ -408,6 +428,7 @@ export default function Home() {
             pokemon={selectedPokemon}
             onClose={() => setSelectedPokemon(null)}
             isMobile
+            onSelectPokemon={handlePokemonSelectById}
           />
         </div>
       )}
