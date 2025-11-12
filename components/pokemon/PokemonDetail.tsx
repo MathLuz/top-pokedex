@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { X, Heart, Ruler, Weight } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { PokemonDetailData } from '@/types/pokemon';
 import { PokemonAPI } from '@/lib/api/pokemon';
 import { formatPokemonName, formatPokemonId, getTypeColor } from '@/lib/utils/pokemon';
@@ -40,7 +42,7 @@ export function PokemonDetail({ pokemon, onClose, isMobile = false }: PokemonDet
         isMobile ? 'min-h-screen' : 'min-h-96'
       )}>
         <div className="text-center text-gray-500 dark:text-gray-400">
-          <div className="text-6xl mb-4">🔍</div>
+          <FontAwesomeIcon icon={faSearch} className="text-6xl mb-4" />
           <h3 className="text-lg font-medium mb-2">Nenhum Pokémon selecionado</h3>
           <p className="text-sm">Selecione um Pokémon para ver os detalhes</p>
         </div>

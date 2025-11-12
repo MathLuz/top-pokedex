@@ -1,6 +1,8 @@
 'use client';
 
 import { useEffect } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar } from '@fortawesome/free-solid-svg-icons';
 import { Header } from '@/components/layout/Header';
 import { PokemonForm } from '@/components/forms/PokemonForm';
 import { useTheme } from '@/hooks/useTheme';
@@ -15,8 +17,9 @@ export default function CreatePokemon() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-            ✨ Criar Novo Pokémon
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4 flex items-center justify-center gap-3">
+            <FontAwesomeIcon icon={faStar} className="text-yellow-500" />
+            Criar Novo Pokémon
           </h1>
           <p className="text-lg text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
             Use sua criatividade para criar pokémons únicos! Preencha os campos abaixo para dar vida ao seu pokémon personalizado.

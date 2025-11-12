@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHeart, faHeartBroken } from '@fortawesome/free-solid-svg-icons';
 import { PokemonAPI } from '@/lib/api/pokemon';
 import { CustomPokemonAPI } from '@/lib/api/custom-pokemon';
 import { PokemonCardData, PokemonDetailData } from '@/types/pokemon';
@@ -159,8 +161,9 @@ export default function Favorites() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            ❤️ Pokémons Favoritos
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
+            <FontAwesomeIcon icon={faHeart} className="text-red-500" />
+            Pokémons Favoritos
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
             {favorites.length === 0
@@ -172,7 +175,7 @@ export default function Favorites() {
 
         {favorites.length === 0 ? (
           <div className="text-center py-16">
-            <div className="text-6xl mb-4">💔</div>
+            <FontAwesomeIcon icon={faHeartBroken} className="text-6xl mb-4 text-gray-400" />
             <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
               Nenhum favorito ainda
             </h2>

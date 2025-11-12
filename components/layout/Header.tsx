@@ -3,7 +3,9 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Moon, Sun, Menu, X, Heart } from 'lucide-react';
+import { Moon, Sun, Menu, X } from 'lucide-react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFire, faHeart, faStar, faPalette, faStarAndCrescent } from '@fortawesome/free-solid-svg-icons';
 import { cn } from '@/lib/utils';
 
 interface HeaderProps {
@@ -16,10 +18,10 @@ export function Header({ theme, toggleTheme }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navigation = [
-    { name: 'Pokémons', href: '/', icon: '🔥' },
-    { name: 'Favoritos', href: '/favorites', icon: '❤️' },
-    { name: 'Criar Pokémon', href: '/create', icon: '✨' },
-    { name: 'Meus Pokémons', href: '/custom', icon: '🎨' },
+    { name: 'Pokémons', href: '/', icon: faFire },
+    { name: 'Favoritos', href: '/favorites', icon: faHeart },
+    { name: 'Criar Pokémon', href: '/create', icon: faStar },
+    { name: 'Meus Pokémons', href: '/custom', icon: faPalette },
   ];
 
   const toggleMobileMenu = () => {
@@ -31,9 +33,14 @@ export function Header({ theme, toggleTheme }: HeaderProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="text-2xl">⚡</div>
-            <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+
+          <Link href="/" className="flex items-center gap-2 group">
+            <i className="fa-solid fa-star-and-crescent text-2xl inline-block
+                bg-gradient-to-br from-cyan-400 via-blue-500 to-pink-500
+                bg-clip-text text-transparent" />
+            <span className="text-xl font-bold
+                   bg-gradient-to-br from-cyan-400 via-blue-500 to-pink-500
+                   bg-clip-text text-transparent">
               Top Pokédex
             </span>
           </Link>
@@ -51,7 +58,7 @@ export function Header({ theme, toggleTheme }: HeaderProps) {
                     : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'
                 )}
               >
-                <span>{item.icon}</span>
+                <FontAwesomeIcon icon={item.icon} className="w-4 h-4" />
                 {item.name}
               </Link>
             ))}
@@ -102,7 +109,7 @@ export function Header({ theme, toggleTheme }: HeaderProps) {
                   )}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <span className="text-lg">{item.icon}</span>
+                  <FontAwesomeIcon icon={item.icon} className="w-5 h-5" />
                   {item.name}
                 </Link>
               ))}

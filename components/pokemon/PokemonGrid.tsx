@@ -1,5 +1,7 @@
 'use client';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { PokemonCard } from './PokemonCard';
 import { PokemonCardData } from '@/types/pokemon';
 import { cn } from '@/lib/utils';
@@ -15,7 +17,7 @@ export function PokemonGrid({ pokemons, onPokemonClick, className }: PokemonGrid
     return (
       <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
         <div className="text-center text-gray-500 dark:text-gray-400">
-          <div className="text-4xl mb-2">🔍</div>
+          <FontAwesomeIcon icon={faSearch} className="text-4xl mb-2" />
           <h3 className="text-lg font-medium mb-1">Nenhum Pokémon encontrado</h3>
           <p className="text-sm">Tente ajustar sua busca ou filtros</p>
         </div>

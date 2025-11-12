@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPalette, faStar } from '@fortawesome/free-solid-svg-icons';
 import { CustomPokemonAPI } from '@/lib/api/custom-pokemon';
 import { PokemonCardData, PokemonDetailData, CustomPokemon } from '@/types/pokemon';
 import { convertCustomPokemonToCard, convertCustomPokemonToDetail } from '@/lib/utils/pokemon';
@@ -205,8 +207,9 @@ export default function CustomPokemons() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            🎨 Meus Pokémons Criados
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
+            <FontAwesomeIcon icon={faPalette} />
+            Meus Pokémons Criados
           </h1>
           <p className="text-gray-600 dark:text-gray-400">
             {customPokemons.length === 0
@@ -218,7 +221,7 @@ export default function CustomPokemons() {
 
         {customPokemons.length === 0 ? (
           <div className="text-center py-16">
-            <div className="text-6xl mb-4">🎨</div>
+            <FontAwesomeIcon icon={faPalette} className="text-6xl mb-4 text-gray-400" />
             <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
               Nenhum pokémon criado ainda
             </h2>
@@ -227,9 +230,10 @@ export default function CustomPokemons() {
             </p>
             <Link
               href="/create"
-              className="inline-flex items-center px-6 py-3 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition-colors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition-colors"
             >
-              ✨ Criar Meu Primeiro Pokémon
+              <FontAwesomeIcon icon={faStar} />
+              Criar Meu Primeiro Pokémon
             </Link>
           </div>
         ) : (
@@ -284,7 +288,7 @@ export default function CustomPokemons() {
                   href="/create"
                   className="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white font-medium rounded-lg hover:bg-purple-700 transition-colors shadow-md hover:shadow-lg"
                 >
-                  <span className="text-lg">✨</span>
+                  <FontAwesomeIcon icon={faStar} />
                   Criar Novo Pokémon
                 </Link>
               </div>
