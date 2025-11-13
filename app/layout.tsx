@@ -1,9 +1,14 @@
 import './globals.css';
 import '@fortawesome/fontawesome-free/css/all.min.css';
+import { config } from '@fortawesome/fontawesome-svg-core';
+import '@fortawesome/fontawesome-svg-core/styles.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Toaster } from '@/components/ui/toaster';
 import { FavoritesProvider } from '@/contexts/FavoritesContext';
+
+// Prevent FontAwesome from adding its CSS since we did it manually above
+config.autoAddCss = false;
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -26,7 +31,7 @@ export const metadata: Metadata = {
       { url: '/favicon/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' },
     ],
   },
-  manifest: '/favicon/site.webmanifest',
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({

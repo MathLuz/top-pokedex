@@ -10,6 +10,7 @@ import { PokemonCardData, PokemonDetailData } from '@/types/pokemon';
 import { convertPokemonToCard, convertPokemonToDetail, convertCustomPokemonToCard, convertCustomPokemonToDetail } from '@/lib/utils/pokemon';
 import { useFavorites } from '@/hooks/useFavorites';
 import { Header } from '@/components/layout/Header';
+import { PageHeader } from '@/components/layout/PageHeader';
 import { PokemonSearch } from '@/components/pokemon/PokemonSearch';
 import { PokemonGrid } from '@/components/pokemon/PokemonGrid';
 import { PokemonDetail } from '@/components/pokemon/PokemonDetail';
@@ -175,19 +176,16 @@ export default function Favorites() {
       <Header theme={theme} toggleTheme={toggleTheme} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Page Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3">
-            <FontAwesomeIcon icon={faHeart} className="text-red-500" />
-            Pokémons Favoritos
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            {favorites.length === 0
+        <PageHeader
+          icon={faHeart}
+          title="Pokémons Favoritos"
+          subtitle={
+            favorites.length === 0
               ? 'Nenhum pokémon marcado como favorito ainda'
               : `${favorites.length} pokémon${favorites.length > 1 ? 's' : ''} favoritado${favorites.length > 1 ? 's' : ''}`
-            }
-          </p>
-        </div>
+          }
+          iconColor="text-red-500"
+        />
 
         {favorites.length === 0 ? (
           <div className="text-center py-16">

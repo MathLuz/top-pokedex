@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Moon, Sun, Menu, X } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFire, faHeart, faStar, faPalette, faStarAndCrescent } from '@fortawesome/free-solid-svg-icons';
+import { faFire, faHeart, faStar, faPalette } from '@fortawesome/free-solid-svg-icons';
 import { cn } from '@/lib/utils';
 
 interface HeaderProps {
@@ -35,7 +35,9 @@ export function Header({ theme, toggleTheme }: HeaderProps) {
           {/* Logo */}
 
           <Link href="/" className="flex items-center gap-2 group">
-            <i className="fa-solid fa-star-and-crescent text-2xl inline-block
+            <i className="fa-solid 
+            fa-dragon
+             text-2xl inline-block
                 bg-gradient-to-br from-cyan-400 via-blue-500 to-pink-500
                 bg-clip-text text-transparent" />
             <span className="text-xl font-bold

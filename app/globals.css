@@ -101,3 +101,11 @@
   animation: tilt-3d 3s ease-in-out infinite;
   transform-style: preserve-3d;
 }
+
+/* Prevent FontAwesome icon flash on load */
+svg.svg-inline--fa {
+  display: inline-block;
+  height: 1em;
+  overflow: visible;
+  vertical-align: -0.125em;
+}

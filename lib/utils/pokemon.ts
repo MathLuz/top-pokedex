@@ -69,7 +69,7 @@ export function convertCustomPokemonToCard(pokemon: CustomPokemon): PokemonCardD
   return {
     id: pokemon.id,
     name: pokemon.name,
-    image: pokemon.imageUrl || '/placeholder-pokemon.png',
+    image: pokemon.imageUrl || '/img/placeholder-pokemon.png',
     types: pokemon.types,
     isCustom: true
   };
@@ -90,7 +90,7 @@ export function convertCustomPokemonToDetail(pokemon: CustomPokemon): PokemonDet
   return {
     id: pokemon.id,
     name: pokemon.name,
-    image: pokemon.imageUrl || '/placeholder-pokemon.png',
+    image: pokemon.imageUrl || '/img/placeholder-pokemon.png',
     types: pokemon.types,
     height: formatHeight(pokemon.height),
     weight: formatWeight(pokemon.weight),
