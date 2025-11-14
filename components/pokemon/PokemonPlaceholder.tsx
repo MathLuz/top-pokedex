@@ -26,7 +26,7 @@ export function PokemonPlaceholder({ className, size = 'md' }: PokemonPlaceholde
         icon={faQuestion}
         className={cn(
           sizeClasses[size],
-          'text-gray-800 dark:text-gray-200 transition-colors'
+          'text-zinc-800 dark:text-zinc-200 transition-colors'
         )}
       />
     </div>

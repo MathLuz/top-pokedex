@@ -204,12 +204,12 @@ export default function CustomPokemons() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900">
         <Header theme={theme} toggleTheme={toggleTheme} />
         <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
           <div className="text-center">
             <LoadingSpinner size="lg" />
-            <p className="mt-4 text-lg font-medium text-gray-600 dark:text-gray-400">
+            <p className="mt-4 text-lg font-medium text-zinc-600 dark:text-zinc-400">
               Carregando pokémons criados...
             </p>
           </div>
@@ -219,7 +219,7 @@ export default function CustomPokemons() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900">
       <Header theme={theme} toggleTheme={toggleTheme} />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -236,11 +236,11 @@ export default function CustomPokemons() {
 
         {customPokemons.length === 0 ? (
           <div className="text-center py-16">
-            <FontAwesomeIcon icon={faPalette} className="text-6xl mb-4 text-gray-400" />
-            <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+            <FontAwesomeIcon icon={faPalette} className="text-6xl mb-4 text-zinc-400" />
+            <h2 className="text-2xl font-semibold text-zinc-900 dark:text-white mb-4">
               Nenhum pokémon criado ainda
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 mb-8 max-w-md mx-auto">
+            <p className="text-zinc-600 dark:text-zinc-400 mb-8 max-w-md mx-auto">
               Que tal criar seu primeiro pokémon personalizado? Use sua imaginação e crie algo único!
             </p>
             <Link
@@ -265,7 +265,7 @@ export default function CustomPokemons() {
 
               {/* Results Summary */}
               {filteredPokemons.length > 0 && (
-                <div className="text-sm text-gray-600 dark:text-gray-400">
+                <div className="text-sm text-zinc-600 dark:text-zinc-400">
                   {filteredPokemons.length === customPokemons.length
                     ? `Mostrando todos os ${customPokemons.length} pokémons criados`
                     : `${filteredPokemons.length} pokémons encontrados de ${customPokemons.length} criados`
@@ -313,7 +313,7 @@ export default function CustomPokemons() {
             {/* Right Column - Pokemon Details */}
             <div className="hidden lg:block">
               {isLoadingDetail ? (
-                <div className="bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700 flex items-center justify-center h-full">
+                <div className="bg-white dark:bg-zinc-800 border-l border-zinc-200 dark:border-zinc-700 flex items-center justify-center h-full">
                   <LoadingSpinner size="lg" />
                 </div>
               ) : (

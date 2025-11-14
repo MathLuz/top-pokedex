@@ -72,14 +72,14 @@ export function PokemonPagination({
   if (totalPages <= 1) return null;
 
   return (
-    <div className={cn('flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700', className)}>
+    <div className={cn('flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-white dark:bg-zinc-800 border-t border-zinc-200 dark:border-zinc-700', className)}>
       {/* Items per page selector */}
       <div className="flex items-center gap-2 text-sm">
-        <span className="text-gray-600 dark:text-gray-400">Mostrar</span>
+        <span className="text-zinc-600 dark:text-zinc-400">Mostrar</span>
         <select
           value={itemsPerPage}
           onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
-          className="border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+          className="border border-zinc-300 dark:border-zinc-600 rounded-md px-2 py-1 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white"
         >
           {itemsPerPageOptions.map(option => (
             <option key={option} value={option}>
@@ -87,11 +87,11 @@ export function PokemonPagination({
             </option>
           ))}
         </select>
-        <span className="text-gray-600 dark:text-gray-400">por página</span>
+        <span className="text-zinc-600 dark:text-zinc-400">por página</span>
       </div>
 
       {/* Page info */}
-      <div className="text-sm text-gray-600 dark:text-gray-400">
+      <div className="text-sm text-zinc-600 dark:text-zinc-400">
         Mostrando {startItem}-{endItem} de {totalItems} pokémons
       </div>
 
@@ -103,8 +103,8 @@ export function PokemonPagination({
           className={cn(
             'flex items-center justify-center w-8 h-8 rounded-md border transition-colors',
             currentPage === 1
-              ? 'border-gray-200 dark:border-gray-600 text-gray-400 dark:text-gray-500 cursor-not-allowed'
-              : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+              ? 'border-zinc-200 dark:border-zinc-600 text-zinc-400 dark:text-zinc-500 cursor-not-allowed'
+              : 'border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700'
           )}
         >
           <ChevronLeft className="h-4 w-4" />
@@ -118,10 +118,10 @@ export function PokemonPagination({
             className={cn(
               'flex items-center justify-center w-8 h-8 rounded-md border text-sm transition-colors',
               page === '...'
-                ? 'border-transparent text-gray-400 dark:text-gray-500 cursor-default'
+                ? 'border-transparent text-zinc-400 dark:text-zinc-500 cursor-default'
                 : page === currentPage
                 ? 'border-blue-500 bg-blue-50 dark:bg-blue-900 text-blue-600 dark:text-blue-300'
-                : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+                : 'border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700'
             )}
           >
             {page}
@@ -134,8 +134,8 @@ export function PokemonPagination({
           className={cn(
             'flex items-center justify-center w-8 h-8 rounded-md border transition-colors',
             currentPage === totalPages
-              ? 'border-gray-200 dark:border-gray-600 text-gray-400 dark:text-gray-500 cursor-not-allowed'
-              : 'border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+              ? 'border-zinc-200 dark:border-zinc-600 text-zinc-400 dark:text-zinc-500 cursor-not-allowed'
+              : 'border-zinc-300 dark:border-zinc-600 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-700'
           )}
         >
           <ChevronRight className="h-4 w-4" />

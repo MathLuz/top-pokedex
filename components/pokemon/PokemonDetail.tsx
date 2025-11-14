@@ -42,10 +42,10 @@ export function PokemonDetail({ pokemon, onClose, isMobile = false, onSelectPoke
   if (!pokemon) {
     return (
       <div className={cn(
-        'flex items-center justify-center h-full bg-gray-50 dark:bg-gray-900',
+        'flex items-center justify-center h-full bg-zinc-50 dark:bg-zinc-900',
         isMobile ? 'min-h-screen' : 'min-h-96'
       )}>
-        <div className="text-center text-gray-500 dark:text-gray-400">
+        <div className="text-center text-zinc-500 dark:text-zinc-400">
           <FontAwesomeIcon icon={faSearch} className="text-6xl mb-4" />
           <h3 className="text-lg font-medium mb-2">Nenhum Pokémon selecionado</h3>
           <p className="text-sm">Selecione um Pokémon para ver os detalhes</p>
@@ -59,24 +59,24 @@ export function PokemonDetail({ pokemon, onClose, isMobile = false, onSelectPoke
   };
 
   const containerClasses = cn(
-    'bg-white dark:bg-gray-800 border-l border-gray-200 dark:border-gray-700',
+    'bg-white dark:bg-zinc-800 border-l border-zinc-200 dark:border-zinc-700',
     isMobile && 'fixed inset-0 z-50 border-l-0'
   );
 
   return (
     <div className={containerClasses}>
       {/* Header */}
-      <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+      <div className="flex items-center justify-between p-6 border-b border-zinc-200 dark:border-zinc-700">
+        <h2 className="text-2xl font-bold text-zinc-900 dark:text-white">
           Detalhes do Pokémon
         </h2>
         {isMobile && (
           <button
             onClick={onClose}
-            className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+            className="p-2 rounded-full hover:bg-zinc-100 dark:hover:bg-zinc-700 transition-colors"
             aria-label="Fechar detalhes"
           >
-            <X className="h-6 w-6 text-gray-500 dark:text-gray-400" />
+            <X className="h-6 w-6 text-zinc-500 dark:text-zinc-400" />
           </button>
         )}
       </div>
@@ -109,10 +109,10 @@ export function PokemonDetail({ pokemon, onClose, isMobile = false, onSelectPoke
 
           {/* Name and ID */}
           <div>
-            <h3 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+            <h3 className="text-3xl font-bold text-zinc-900 dark:text-white mb-2">
               {formatPokemonName(pokemon.name)}
             </h3>
-            <p className="text-lg text-gray-500 dark:text-gray-400 font-mono">
+            <p className="text-lg text-zinc-500 dark:text-zinc-400 font-mono">
               {formatPokemonId(pokemon.id)}
             </p>
           </div>
@@ -120,17 +120,17 @@ export function PokemonDetail({ pokemon, onClose, isMobile = false, onSelectPoke
           {/* Favorite Button */}
           <button
             onClick={handleFavoriteClick}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-zinc-100 dark:bg-zinc-700 hover:bg-zinc-200 dark:hover:bg-zinc-600 transition-colors"
           >
             <Heart
               className={cn(
                 'h-5 w-5',
                 isFavorite(pokemon.id)
                   ? 'fill-red-500 text-red-500'
-                  : 'text-gray-400'
+                  : 'text-zinc-400'
               )}
             />
-            <span className="text-sm font-medium text-gray-700 dark:text-gray-300">
+            <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
               {isFavorite(pokemon.id) ? 'Remover dos Favoritos' : 'Adicionar aos Favoritos'}
             </span>
           </button>
@@ -138,22 +138,22 @@ export function PokemonDetail({ pokemon, onClose, isMobile = false, onSelectPoke
 
         {/* Stats */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-            <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 mb-2">
+          <div className="bg-zinc-50 dark:bg-zinc-700 p-4 rounded-lg">
+            <div className="flex items-center gap-2 text-zinc-600 dark:text-zinc-300 mb-2">
               <Ruler className="h-4 w-4" />
               <span className="text-sm font-medium">Altura</span>
             </div>
-            <p className="text-lg font-bold text-gray-900 dark:text-white">
+            <p className="text-lg font-bold text-zinc-900 dark:text-white">
               {pokemon.height}
             </p>
           </div>
 
-          <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
-            <div className="flex items-center gap-2 text-gray-600 dark:text-gray-300 mb-2">
+          <div className="bg-zinc-50 dark:bg-zinc-700 p-4 rounded-lg">
+            <div className="flex items-center gap-2 text-zinc-600 dark:text-zinc-300 mb-2">
               <Weight className="h-4 w-4" />
               <span className="text-sm font-medium">Peso</span>
             </div>
-            <p className="text-lg font-bold text-gray-900 dark:text-white">
+            <p className="text-lg font-bold text-zinc-900 dark:text-white">
               {pokemon.weight}
             </p>
           </div>
@@ -161,7 +161,7 @@ export function PokemonDetail({ pokemon, onClose, isMobile = false, onSelectPoke
 
         {/* Types */}
         <div>
-          <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+          <h4 className="text-lg font-semibold text-zinc-900 dark:text-white mb-3">
             Tipos
           </h4>
           <div className="flex flex-wrap gap-2">
@@ -176,7 +176,7 @@ export function PokemonDetail({ pokemon, onClose, isMobile = false, onSelectPoke
                 </span>
               ))
             ) : (
-              <span className="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium text-white bg-gray-400">
+              <span className="inline-flex items-center px-4 py-2 rounded-lg text-sm font-medium text-white bg-zinc-400">
                 Desconhecido
               </span>
             )}
@@ -186,7 +186,7 @@ export function PokemonDetail({ pokemon, onClose, isMobile = false, onSelectPoke
         {/* Evolution Chain */}
         {!pokemon.isCustom && (
           <div>
-            <h4 className="text-lg font-semibold text-gray-900 dark:text-white mb-3">
+            <h4 className="text-lg font-semibold text-zinc-900 dark:text-white mb-3">
               Linha Evolutiva
             </h4>
             {isLoadingEvolution ? (
@@ -213,7 +213,7 @@ export function PokemonDetail({ pokemon, onClose, isMobile = false, onSelectPoke
                     'px-3 py-2 rounded-lg text-sm font-medium transition-all',
                     evolution.toLowerCase() === pokemon.name.toLowerCase()
                       ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 ring-2 ring-blue-500 cursor-default'
-                      : 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600 hover:ring-2 hover:ring-blue-400 cursor-pointer'
+                      : 'bg-zinc-100 dark:bg-zinc-700 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200 dark:hover:bg-zinc-600 hover:ring-2 hover:ring-blue-400 cursor-pointer'
                     )}
                   >
                     {formatPokemonName(evolution)}
@@ -221,14 +221,14 @@ export function PokemonDetail({ pokemon, onClose, isMobile = false, onSelectPoke
                   {index < evolutionChain.length - 1 && (
                     <FontAwesomeIcon 
                     icon={faCaretRight} 
-                    className="text-gray-400 dark:text-gray-500"
+                    className="text-zinc-400 dark:text-zinc-500"
                     />
                   )}
                   </div>
                 ))}
                 </div>
               ) : (
-              <p className="text-gray-500 dark:text-gray-400 text-sm">
+              <p className="text-zinc-500 dark:text-zinc-400 text-sm">
                 Não possui evolução
               </p>
             )}

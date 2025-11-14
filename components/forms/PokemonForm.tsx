@@ -88,7 +88,7 @@ export function PokemonForm() {
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Name Field */}
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label htmlFor="name" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
             Nome do Pokémon *
           </label>
           <input
@@ -97,14 +97,14 @@ export function PokemonForm() {
             value={formData.name}
             onChange={(e) => handleInputChange('name', e.target.value)}
             placeholder="Ex: Pikachu"
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+            className="w-full px-4 py-3 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-500 dark:placeholder-zinc-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
             required
           />
         </div>
 
         {/* Image URL Field */}
         <div>
-          <label htmlFor="imageUrl" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          <label htmlFor="imageUrl" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
             URL da Imagem
           </label>
           <input
@@ -113,7 +113,7 @@ export function PokemonForm() {
             value={formData.imageUrl}
             onChange={(e) => handleInputChange('imageUrl', e.target.value)}
             placeholder="https://example.com/pokemon.png"
-            className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+            className="w-full px-4 py-3 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-500 dark:placeholder-zinc-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
           />
           {formData.imageUrl && (
             <div className="mt-3 text-center">
@@ -122,7 +122,7 @@ export function PokemonForm() {
                 alt="Preview"
                 width={128}
                 height={128}
-                className="mx-auto h-32 w-32 object-contain rounded-lg border border-gray-200 dark:border-gray-600"
+                className="mx-auto h-32 w-32 object-contain rounded-lg border border-zinc-200 dark:border-zinc-600"
                 onLoadingComplete={(result) => {
                   if (result.naturalWidth === 0) {
                     // Handle broken image case
@@ -137,7 +137,7 @@ export function PokemonForm() {
         {/* Height and Weight */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="height" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label htmlFor="height" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
               Altura
             </label>
             <input
@@ -146,12 +146,12 @@ export function PokemonForm() {
               value={formData.height}
               onChange={(e) => handleInputChange('height', e.target.value)}
               placeholder="Ex: 0.4m"
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+              className="w-full px-4 py-3 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-500 dark:placeholder-zinc-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
             />
           </div>
 
           <div>
-            <label htmlFor="weight" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+            <label htmlFor="weight" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-2">
               Peso
             </label>
             <input
@@ -160,14 +160,14 @@ export function PokemonForm() {
               value={formData.weight}
               onChange={(e) => handleInputChange('weight', e.target.value)}
               placeholder="Ex: 6.0kg"
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
+              className="w-full px-4 py-3 border border-zinc-300 dark:border-zinc-600 rounded-lg bg-white dark:bg-zinc-800 text-zinc-900 dark:text-white placeholder-zinc-500 dark:placeholder-zinc-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
             />
           </div>
         </div>
 
         {/* Types */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">
+          <label className="block text-sm font-medium text-zinc-700 dark:text-zinc-300 mb-3">
             Tipos (máximo 2)
           </label>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
@@ -186,8 +186,8 @@ export function PokemonForm() {
                     isSelected
                       ? 'bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 border-blue-300 dark:border-blue-600'
                       : isDisabled
-                      ? 'bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-500 border-gray-200 dark:border-gray-600 cursor-not-allowed'
-                      : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700'
+                      ? 'bg-zinc-100 dark:bg-zinc-700 text-zinc-400 dark:text-zinc-500 border-zinc-200 dark:border-zinc-600 cursor-not-allowed'
+                      : 'bg-white dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 border-zinc-200 dark:border-zinc-600 hover:bg-zinc-50 dark:hover:bg-zinc-700'
                   )}
                 >
                   {formatPokemonName(type)}
@@ -197,7 +197,7 @@ export function PokemonForm() {
           </div>
 
           {formData.types.length > 0 && (
-            <div className="mt-3 text-sm text-gray-600 dark:text-gray-400">
+            <div className="mt-3 text-sm text-zinc-600 dark:text-zinc-400">
               Tipos selecionados: {formData.types.map(formatPokemonName).join(', ')}
             </div>
           )}
@@ -217,7 +217,7 @@ export function PokemonForm() {
           className={cn(
             'w-full flex items-center justify-center gap-2 px-6 py-3 text-sm font-medium rounded-lg transition-colors',
             isSubmitting || !formData.name.trim()
-              ? 'bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-400 cursor-not-allowed'
+              ? 'bg-zinc-300 dark:bg-zinc-600 text-zinc-500 dark:text-zinc-400 cursor-not-allowed'
               : 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm hover:shadow-md'
           )}
         >

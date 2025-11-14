@@ -290,7 +290,7 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-gray-50 dark:bg-gray-900">
+    <div className="flex flex-col h-screen bg-zinc-50 dark:bg-zinc-900">
       <Header theme={theme} toggleTheme={toggleTheme} />
       
       <div className="flex-1 overflow-hidden">
@@ -309,7 +309,7 @@ export default function Home() {
 
                 {/* Results Summary */}
                 {!isLoading && !isSearching && filteredPokemons.length > 0 && (
-                  <div className="text-sm text-gray-600 dark:text-gray-400">
+                  <div className="text-sm text-zinc-600 dark:text-zinc-400">
                     {searchQuery.trim() 
                       ? `${filteredPokemons.length} pokémons encontrados`
                       : `${allPokemons.length} de ${totalAvailable} pokémons carregados`
@@ -319,7 +319,7 @@ export default function Home() {
 
                 {/* Loading State */}
                 {isLoading && (
-                  <div className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
+                  <div className="text-sm text-zinc-600 dark:text-zinc-400 flex items-center gap-2">
                     <LoadingSpinner size="sm" />
                     Carregando pokémons...
                   </div>
@@ -327,7 +327,7 @@ export default function Home() {
 
                 {/* Searching State */}
                 {isSearching && (
-                  <div className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
+                  <div className="text-sm text-zinc-600 dark:text-zinc-400 flex items-center gap-2">
                     <LoadingSpinner size="sm" />
                     Buscando pokémon...
                   </div>
@@ -342,15 +342,15 @@ export default function Home() {
                     {Array.from({ length: 12 }).map((_, index) => (
                       <div
                         key={index}
-                        className="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden border border-gray-200 dark:border-gray-700 animate-pulse"
+                        className="bg-white dark:bg-zinc-800 rounded-xl shadow-md overflow-hidden border border-zinc-200 dark:border-zinc-700 animate-pulse"
                       >
-                        <div className="aspect-square bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-700 dark:to-gray-600" />
+                        <div className="aspect-square bg-gradient-to-br from-zinc-200 to-zinc-300 dark:from-zinc-700 dark:to-zinc-600" />
                         <div className="p-4 space-y-3">
-                          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/3" />
-                          <div className="h-6 bg-gray-300 dark:bg-gray-600 rounded w-2/3" />
+                          <div className="h-4 bg-zinc-200 dark:bg-zinc-700 rounded w-1/3" />
+                          <div className="h-6 bg-zinc-300 dark:bg-zinc-600 rounded w-2/3" />
                           <div className="flex gap-2">
-                            <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded flex-1" />
-                            <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded flex-1" />
+                            <div className="h-6 bg-zinc-200 dark:bg-zinc-700 rounded flex-1" />
+                            <div className="h-6 bg-zinc-200 dark:bg-zinc-700 rounded flex-1" />
                           </div>
                         </div>
                       </div>
@@ -379,7 +379,7 @@ export default function Home() {
                     {/* Loading More Indicator */}
                     {isLoadingMore && (
                       <div className="flex items-center justify-center py-8">
-                        <div className="text-sm text-gray-600 dark:text-gray-400 flex items-center gap-2">
+                        <div className="text-sm text-zinc-600 dark:text-zinc-400 flex items-center gap-2">
                           <LoadingSpinner size="sm" />
                           Carregando mais pokémons...
                         </div>
@@ -405,7 +405,7 @@ export default function Home() {
             {/* Right Column - Pokemon Details (Fixed) */}
             <div className="hidden lg:block sticky top-0 h-full overflow-y-auto">
               {isLoadingDetail ? (
-                <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 flex items-center justify-center h-full">
+                <div className="bg-white dark:bg-zinc-800 rounded-xl border border-zinc-200 dark:border-zinc-700 flex items-center justify-center h-full">
                   <LoadingSpinner size="lg" />
                 </div>
               ) : (

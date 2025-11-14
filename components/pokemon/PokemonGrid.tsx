@@ -16,8 +16,8 @@ interface PokemonGridProps {
 export function PokemonGrid({ pokemons, onPokemonClick, className, selectedPokemonId }: PokemonGridProps) {
   if (pokemons.length === 0) {
     return (
-      <div className="flex items-center justify-center h-64 bg-gray-50 dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700">
-        <div className="text-center text-gray-500 dark:text-gray-400">
+      <div className="flex items-center justify-center h-64 bg-zinc-50 dark:bg-zinc-800 rounded-lg border border-zinc-200 dark:border-zinc-700">
+        <div className="text-center text-zinc-500 dark:text-zinc-400">
           <FontAwesomeIcon icon={faSearch} className="text-4xl mb-2" />
           <h3 className="text-lg font-medium mb-1">Nenhum Pokémon encontrado</h3>
           <p className="text-sm">Tente ajustar sua busca ou filtros</p>

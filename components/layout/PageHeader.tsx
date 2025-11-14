@@ -24,7 +24,7 @@ export function PageHeader({
   return (
     <div className={cn('mb-8', centered && 'text-center', className)}>
       <h1 className={cn(
-        'text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2 flex items-center gap-3',
+        'text-3xl md:text-4xl font-bold text-zinc-900 dark:text-white mb-2 flex items-center gap-3',
         centered && 'justify-center'
       )}>
         <FontAwesomeIcon icon={icon} className={iconColor} />
@@ -32,7 +32,7 @@ export function PageHeader({
       </h1>
       {subtitle && (
         <p className={cn(
-          'text-gray-600 dark:text-gray-400',
+          'text-zinc-600 dark:text-zinc-400',
           centered ? 'text-lg max-w-2xl mx-auto' : 'text-base'
         )}>
           {subtitle}

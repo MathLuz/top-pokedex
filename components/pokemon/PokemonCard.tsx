@@ -28,7 +28,7 @@ export function PokemonCard({ pokemon, onClick, className, isSelected = false }:
   return (
     <div
       className={cn(
-        'group relative bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer border border-gray-200 dark:border-gray-700 hover:border-blue-300 dark:hover:border-blue-600 hover:-translate-y-1',
+        'group relative bg-white dark:bg-zinc-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer border border-zinc-200 dark:border-zinc-700 hover:border-blue-300 dark:hover:border-blue-600 hover:-translate-y-1',
         isSelected ? 'ring-2 ring-blue-500 z-30 animate-tilt-3d' : 'z-10',
         'hover:!z-50',
         className
@@ -38,7 +38,7 @@ export function PokemonCard({ pokemon, onClick, className, isSelected = false }:
       {/* Favorite Button */}
       <button
         onClick={handleFavoriteClick}
-        className="absolute top-3 right-3 z-10 p-2 rounded-full bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm hover:bg-white dark:hover:bg-gray-800 transition-colors"
+        className="absolute top-3 right-3 z-10 p-2 rounded-full bg-white/80 dark:bg-zinc-800/80 backdrop-blur-sm hover:bg-white dark:hover:bg-zinc-800 transition-colors"
         aria-label={isFavorite(pokemon.id) ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
       >
         <Heart
@@ -46,7 +46,7 @@ export function PokemonCard({ pokemon, onClick, className, isSelected = false }:
             'h-4 w-4 transition-colors',
             isFavorite(pokemon.id)
               ? 'fill-red-500 text-red-500'
-              : 'text-gray-400 hover:text-red-400'
+              : 'text-zinc-400 hover:text-red-400'
           )}
         />
       </button>
@@ -77,10 +77,10 @@ export function PokemonCard({ pokemon, onClick, className, isSelected = false }:
       {/* Pokemon Info */}
       <div className="p-4 pt-0">
         <div className="flex items-center justify-between mb-2">
-          <h3 className="font-bold text-lg text-gray-900 dark:text-white">
+          <h3 className="font-bold text-lg text-zinc-900 dark:text-white">
             {formatPokemonName(pokemon.name)}
           </h3>
-          <span className="text-sm text-gray-500 dark:text-gray-400 font-mono">
+          <span className="text-sm text-zinc-500 dark:text-zinc-400 font-mono">
             {formatPokemonId(pokemon.id)}
           </span>
         </div>
@@ -98,7 +98,7 @@ export function PokemonCard({ pokemon, onClick, className, isSelected = false }:
               </span>
             ))
           ) : (
-            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium text-white bg-gray-400">
+            <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium text-white bg-zinc-400">
               Desconhecido
             </span>
           )}
