@@ -6,6 +6,8 @@ import { formatPokemonName, formatPokemonId, getTypeColor } from '@/lib/utils/po
 import { useFavorites } from '@/hooks/useFavorites';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import { PokemonPlaceholder } from './PokemonPlaceholder';
+import { useState } from 'react';
 
 interface PokemonCardProps {
   pokemon: PokemonCardData;
@@ -16,6 +18,7 @@ interface PokemonCardProps {
 
 export function PokemonCard({ pokemon, onClick, className, isSelected = false }: PokemonCardProps) {
   const { isFavorite, toggleFavorite } = useFavorites();
+  const [imageError, setImageError] = useState(false);
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -57,17 +60,18 @@ export function PokemonCard({ pokemon, onClick, className, isSelected = false }:
 
       {/* Pokemon Image */}
       <div className="relative h-48 flex items-center justify-center p-4">
-        <Image
-          src={pokemon.image}
-          width={128}
-          height={128}
-          alt={formatPokemonName(pokemon.name)}
-          className="max-h-full max-w-full object-contain group-hover:scale-110 transition-transform duration-300"
-          onError={(e) => {
-            const target = e.target as HTMLImageElement;
-            target.src = 'https://images.pexels.com/photos/2693651/pexels-photo-2693651.jpeg?auto=compress&cs=tinysrgb&w=400';
-          }}
-        />
+        {imageError || !pokemon.image || pokemon.image.trim() === '' ? (
+          <PokemonPlaceholder size="sm" />
+        ) : (
+          <Image
+            src={pokemon.image}
+            width={128}
+            height={128}
+            alt={formatPokemonName(pokemon.name)}
+            className="max-h-full max-w-full object-contain group-hover:scale-110 transition-transform duration-300"
+            onError={() => setImageError(true)}
+          />
+        )}
       </div>
 
       {/* Pokemon Info */}

@@ -11,6 +11,7 @@ import { useFavorites } from '@/hooks/useFavorites';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { cn } from '@/lib/utils';
 import Image from 'next/image';
+import { PokemonPlaceholder } from './PokemonPlaceholder';
 
 interface PokemonDetailProps {
   pokemon: PokemonDetailData | null;
@@ -23,8 +24,10 @@ export function PokemonDetail({ pokemon, onClose, isMobile = false, onSelectPoke
   const { isFavorite, toggleFavorite } = useFavorites();
   const [evolutionChain, setEvolutionChain] = useState<string[]>([]);
   const [isLoadingEvolution, setIsLoadingEvolution] = useState(false);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
+    setImageError(false); // Reset image error when pokemon changes
     if (pokemon && !pokemon.isCustom) {
       setIsLoadingEvolution(true);
       PokemonAPI.getPokemonEvolutionChain(pokemon.name)
@@ -83,18 +86,20 @@ export function PokemonDetail({ pokemon, onClose, isMobile = false, onSelectPoke
         {/* Main Info */}
         <div className="text-center space-y-4">
           {/* Pokemon Image */}
-          <div className="relative">
-            <Image
-              src={pokemon.image}
-              alt={formatPokemonName(pokemon.name)}
-              width={192}
-              height={192}
-              className="mx-auto h-48 w-48 object-contain"
-              onError={() => {
-                console.error('Failed to load image');
-              }}
-              unoptimized
-            />
+          <div className="relative h-48 flex items-center justify-center">
+            {imageError || !pokemon.image || pokemon.image.trim() === '' ? (
+              <PokemonPlaceholder size="lg" />
+            ) : (
+              <Image
+                src={pokemon.image}
+                alt={formatPokemonName(pokemon.name)}
+                width={192}
+                height={192}
+                className="max-h-full object-contain"
+                onError={() => setImageError(true)}
+                unoptimized
+              />
+            )}
             {pokemon.isCustom && (
               <div className="absolute top-0 right-0 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
                 Custom
