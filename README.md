@@ -1,155 +1,69 @@
-# 📱 Pokédex - Aplicação Web
+# Top Pokédex
 
-Uma Pokédex moderna e interativa desenvolvida com Next.js, TypeScript e Tailwind CSS, consumindo a PokéAPI e permitindo a criação de pokémons customizados.
-
----
-
-## Funcionalidades
-
-### Busca e Visualização
-- **Listagem de Pokémons**: Visualize todos os pokémons oficiais da PokéAPI
-- **Busca por Nome**: Encontre pokémons rapidamente digitando seus nomes
-- **Filtro por Tipo**: Filtre pokémons por tipos (Fogo, Água, Planta, etc.)
-- **Paginação**: Navigate através de múltiplas páginas de pokémons
-- **Detalhes Completos**: Veja informações detalhadas como altura, peso, tipos e sprites
-
-### Sistema de Favoritos
-- **Marcar Favoritos**: Adicione pokémons aos seus favoritos com um clique
-- **Página de Favoritos**: Visualize todos os seus pokémons favoritos em um só lugar
-- **Persistência Local**: Favoritos salvos no localStorage do navegador
-
-### Criação de Pokémons Customizados
-- **Criar Pokémons**: Crie seus próprios pokémons personalizados
-- **Editar Pokémons**: Modifique pokémons customizados já criados
-- **Deletar Pokémons**: Remova pokémons customizados quando desejar
-- **Campos Personalizáveis**:
-  - Nome (obrigatório)
-  - URL da Imagem
-  - Altura
-  - Peso
-  - Até 2 tipos diferentes
-
-### Interface
-- **Tema Claro/Escuro**: Alterne entre temas claro e escuro
-- **Design Responsivo**: Funciona perfeitamente em desktop, tablet e mobile
-- **Animações Suaves**: Transições e efeitos visuais agradáveis
+Uma Pokédex moderna e interativa desenvolvida com Next.js, TypeScript e Tailwind CSS.
 
 ---
 
-## Tecnologias Utilizadas
+## Páginas
 
-### Frontend
-- **Next.js 14**: Framework React com App Router
-- **TypeScript**: Tipagem estática para maior segurança
-- **Tailwind CSS**: Estilização utility-first
-- **shadcn/ui**: Biblioteca de componentes UI
-- **Font Awesome**: Ícones e elementos visuais
-- **React Hooks**: useState, useEffect, useContext, custom hooks
+### Página Inicial (`/`)
+- Lista todos os pokémons oficiais da PokéAPI
+- Busca por nome
+- Filtro por tipo
+- Paginação (20 pokémons por página)
+- Adicionar aos favoritos
 
-### APIs
-- **PokéAPI**: API oficial de pokémons (https://pokeapi.co/)
+### Favoritos (`/favorites`)
+- Exibe todos os pokémons marcados como favoritos
+- Suporta pokémons oficiais e customizados
+- Remove favoritos com um clique
 
-### Armazenamento
-- **LocalStorage**: Persistência de favoritos e pokémons customizados no navegador
+### Criar Pokémon (`/create`)
+- Formulário para criar pokémons personalizados
+- Campos: Nome, Imagem, Altura, Peso, Tipos (até 2)
 
----
-
-## Estrutura do Projeto
-
-```
-project/
-├── app/                      # Páginas Next.js (App Router)
-│   ├── page.tsx             # Página inicial (lista de pokémons)
-│   ├── create/              # Página de criação
-│   ├── custom/              # Página de pokémons customizados
-│   └── favorites/           # Página de favoritos
-├── components/              # Componentes React
-│   ├── forms/              # Formulários
-│   ├── layout/             # Header e layout
-│   ├── pokemon/            # Componentes de pokémon
-│   └── ui/                 # Componentes UI (shadcn)
-├── contexts/               # Context API (Favoritos)
-├── hooks/                  # Custom React Hooks
-├── lib/                    # Utilitários e APIs
-│   ├── api/               # Funções de chamada à API
-│   └── utils/             # Funções auxiliares
-└── types/                  # Tipos TypeScript
-```
+### Pokémons Customizados (`/custom`)
+- Lista pokémons criados pelo usuário
+- Editar e deletar pokémons customizados
+- Adicionar aos favoritos
 
 ---
 
 ## Como Funciona
 
-### 1. Listagem de Pokémons Oficiais
-- A aplicação consome a **PokéAPI** para buscar pokémons oficiais
-- Os dados são processados e exibidos em cards com imagens e tipos
-- Suporta paginação para navegar entre diferentes páginas
+### Filtros
+- **Busca**: Filtra pokémons em tempo real digitando o nome
+- **Tipo**: Dropdown com todos os tipos de pokémon (Fogo, Água, Planta, etc.)
 
-### 2. Sistema de Favoritos
-- Utiliza **Context API** para gerenciar estado global
-- IDs dos pokémons favoritos são salvos no **localStorage**
-- Funciona tanto para pokémons oficiais quanto customizados
+### Paginação
+- Exibe inicialmente 12 pokémons por página, alterável para 24, 36 ou 48 pokémons por página
+- Botões para navegar entre páginas (Anterior/Próximo)
+- Indicador de página atual
 
-### 3. Pokémons Customizados
-- Os dados são validados no **frontend**
-- Um ID único é gerado automaticamente (começando em 9001)
-- Pokémons são salvos no **localStorage** do navegador
-- IDs customizados começam em **9001+** para evitar conflito com oficiais
+### Sistema de Favoritos
+- Salvo no **localStorage** do navegador
+- Persiste entre sessões
+- Funciona com pokémons oficiais e customizados
 
-### 4. Sistema de IDs
-- **Pokémons Oficiais**: IDs 1 - 1000+ (da PokéAPI)
-- **Pokémons Customizados**: IDs 9001+ (gerados localmente)
-- Isso garante que não haja conflitos entre pokémons oficiais e customizados
+---
+
+## Tecnologias
+
+- **Next.js 14** - Framework React
+- **TypeScript** - Tipagem estática
+- **Tailwind CSS** - Estilização
+- **shadcn/ui** - Componentes UI
+- **PokéAPI** - API oficial de pokémons
 
 ---
 
 ## Como Executar
 
-### Pré-requisitos
-- Node.js 18+ instalado
-- npm ou yarn
-
-### 1. Instalar Dependências
-
 ```bash
 npm install
-```
-
-### 2. Iniciar a Aplicação
-
-```bash
 npm run dev
 ```
 
-A aplicação estará disponível em `http://localhost:3000`
-
 ---
 
-## Funcionalidades por Página
-
-### Página Inicial (`/`)
-- Lista todos os pokémons com paginação
-- Busca por nome
-- Filtro por tipo
-- Adicionar aos favoritos
-
-### Favoritos (`/favorites`)
-- Exibe todos os pokémons favoritos
-- Suporta pokémons oficiais e customizados
-- Remove favoritos com um clique
-
-### Criar Pokémon (`/create`)
-- Formulário para criar pokémons customizados
-- Validação de campos obrigatórios
-- Dicas de preenchimento
-
-### Pokémons Customizados (`/custom`)
-- Lista todos os pokémons customizados criados
-- Editar pokémons existentes
-- Deletar pokémons customizados
-- Adicionar aos favoritos
-
----
-
-**Desenvolvido por:** Matheus Luz  
-**Data:** 11/2025
+**Desenvolvido por:** Matheus Luz
