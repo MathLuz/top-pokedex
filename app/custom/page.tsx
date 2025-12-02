@@ -207,7 +207,7 @@ export default function CustomPokemons() {
       <div className="min-h-screen bg-zinc-50 dark:bg-zinc-900">
         <Header theme={theme} toggleTheme={toggleTheme} />
         <div className="flex items-center justify-center min-h-[calc(100vh-4rem)]">
-          <div className="text-center">
+          <div className="flex flex-col items-center justify-center">
             <LoadingSpinner size="lg" />
             <p className="mt-4 text-lg font-medium text-zinc-600 dark:text-zinc-400">
               Carregando pokémons criados...

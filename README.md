@@ -10,8 +10,8 @@ Uma Pokédex moderna e interativa desenvolvida com Next.js, TypeScript e Tailwin
 - Lista todos os pokémons oficiais da PokéAPI
 - Busca por nome
 - Filtro por tipo
-- Paginação (20 pokémons por página)
-- Adicionar aos favoritos
+- Paginação 
+- Adicionar aos favoritos 
 
 ### Favoritos (`/favorites`)
 - Exibe todos os pokémons marcados como favoritos
