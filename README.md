@@ -57,13 +57,10 @@ Uma Pokédex moderna e interativa desenvolvida com Next.js, TypeScript e Tailwin
 
 ---
 
-## Como Executar
+## Deploy
 
-```bash
-npm install
-npm run dev
-```
+Acesse a aplicação em: [https://top-pokedex.vercel.app/](https://top-pokedex.vercel.app/)
 
 ---
 
-**Desenvolvido por:** Matheus Luz
+**Dev:** Matheus Luz
