@@ -53,7 +53,7 @@ export function PokemonCard({ pokemon, onClick, className, isSelected = false }:
 
       {/* Custom Badge */}
       {pokemon.isCustom && (
-        <div className="absolute top-3 left-3 z-10 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-2 py-1 rounded-full font-medium shadow-md">
+        <div className="absolute top-3 left-3 z-10 bg-gradient-to-r from-[#B50A0A] to-[#3d0303] text-white text-xs px-2 py-1 rounded-full font-medium shadow-md">
           Custom
         </div>
       )}

@@ -101,7 +101,7 @@ export function PokemonDetail({ pokemon, onClose, isMobile = false, onSelectPoke
               />
             )}
             {pokemon.isCustom && (
-              <div className="absolute top-0 right-0 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
+              <div className="absolute top-0 right-0 bg-gradient-to-r from-[#B50A0A] to-[#3d0303] text-white text-xs px-3 py-1 rounded-full font-medium shadow-lg">
                 Custom
               </div>
             )}

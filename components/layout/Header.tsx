@@ -38,10 +38,12 @@ export function Header({ theme, toggleTheme }: HeaderProps) {
             <i className="fa-solid 
             fa-dragon
              text-2xl inline-block
-                bg-gradient-to-br from-cyan-400 via-blue-500 to-pink-500
+                bg-gradient-to-br from-[#B50A0A] to-[#3d0303]
+                dark:from-[#d63434] dark:to-[#8B1A1A]
                 bg-clip-text text-transparent" />
             <span className="text-xl font-bold
-                   bg-gradient-to-br from-cyan-400 via-blue-500 to-pink-500
+                   bg-gradient-to-br from-[#B50A0A] to-[#3d0303]
+                   dark:from-[#d63434] dark:to-[#8B1A1A]
                    bg-clip-text text-transparent">
               Top Pokédex
             </span>
@@ -56,7 +58,7 @@ export function Header({ theme, toggleTheme }: HeaderProps) {
                 className={cn(
                   'flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors',
                   pathname === item.href
-                    ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/50'
+                    ? 'text-[#ff6b35] dark:text-[#ff8c5a] bg-orange-50 dark:bg-orange-950/20'
                     : 'text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-zinc-800'
                 )}
               >
@@ -106,7 +108,7 @@ export function Header({ theme, toggleTheme }: HeaderProps) {
                   className={cn(
                     'flex items-center gap-3 px-3 py-2 rounded-md text-base font-medium transition-colors',
                     pathname === item.href
-                      ? 'text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/50'
+                      ? 'text-[#ff6b35] dark:text-[#ff8c5a] bg-orange-50 dark:bg-orange-950/20'
                       : 'text-zinc-600 dark:text-zinc-300 hover:text-zinc-900 dark:hover:text-white hover:bg-zinc-50 dark:hover:bg-zinc-800'
                   )}
                   onClick={() => setIsMobileMenuOpen(false)}
