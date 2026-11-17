@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { Moon, Sun, Menu, X } from 'lucide-react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -35,12 +36,14 @@ export function Header({ theme, toggleTheme }: HeaderProps) {
           {/* Logo */}
 
           <Link href="/" className="flex items-center gap-2 group">
-            <i className="fa-solid 
-            fa-dragon
-             text-2xl inline-block
-                bg-gradient-to-br from-[#B50A0A] to-[#3d0303]
-                dark:from-[#d63434] dark:to-[#8B1A1A]
-                bg-clip-text text-transparent" />
+            <Image
+              src="/logo.png"
+              alt="Top Pokédex"
+              width={40}
+              height={40}
+              priority
+              className="h-10 w-10 rounded-lg transition-transform group-hover:scale-105"
+            />
             <span className="text-xl font-bold
                    bg-gradient-to-br from-[#B50A0A] to-[#3d0303]
                    dark:from-[#d63434] dark:to-[#8B1A1A]
