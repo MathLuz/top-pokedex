@@ -1,9 +1,9 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { PokemonAPI } from '@/lib/api/pokemon';
-import { PokemonCardData, PokemonDetailData, Pokemon } from '@/types/pokemon';
-import { convertPokemonToCard, convertPokemonToDetail } from '@/lib/utils/pokemon';
+import { PokemonCardData, PokemonDetailData } from '@/types/pokemon';
+import { convertPokemonToDetail, POKEMON_TYPES } from '@/lib/utils/pokemon';
 import { useFavorites } from '@/hooks/useFavorites';
 import { Header } from '@/components/layout/Header';
 import { PokemonSearch } from '@/components/pokemon/PokemonSearch';
@@ -13,274 +13,232 @@ import { PokemonPagination } from '@/components/pokemon/PokemonPagination';
 import { LoadingSpinner } from '@/components/ui/loading-spinner';
 import { useTheme } from '@/hooks/useTheme';
 
+interface IndexEntry {
+  id: number;
+  name: string;
+  types: string[];
+}
+
+// A lista de pokémons/tipos quase nunca muda: cache de 7 dias no localStorage
+const CACHE_DURATION = 7 * 24 * 60 * 60 * 1000;
+const DEX_CACHE_KEY = 'pokedex-index-v2';
+const LEGACY_CACHE_KEYS = ['cached-pokemons', 'cached-pokemons-timestamp', 'cached-total-pokemons'];
+// Ids >= 10000 na PokéAPI são formas alternativas (mega, regionais etc.), não espécies
+const MAX_SPECIES_ID = 10000;
+
+const artworkUrl = (id: number) =>
+  `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${id}.png`;
+
+function readCache<T>(key: string): { data: T; timestamp: number } | null {
+  try {
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeCache<T>(key: string, data: T) {
+  try {
+    localStorage.setItem(key, JSON.stringify({ data, timestamp: Date.now() }));
+  } catch {
+    // localStorage cheio ou indisponível: segue sem cache
+  }
+}
+
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+// Tenta de novo com espera crescente (a PokéAPI limita rajadas de requisições)
+async function withRetry<T>(fn: () => Promise<T>, attempts = 3): Promise<T> {
+  for (let i = 0; ; i++) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (i >= attempts - 1) throw error;
+      await sleep(500 * 2 ** i);
+    }
+  }
+}
+
+// Executa as tarefas com no máximo `limit` requisições simultâneas
+async function mapWithConcurrency<T, R>(items: T[], limit: number, fn: (item: T) => Promise<R>): Promise<R[]> {
+  const results: R[] = new Array(items.length);
+  let next = 0;
+  const worker = async () => {
+    while (next < items.length) {
+      const index = next++;
+      results[index] = await fn(items[index]);
+    }
+  };
+  await Promise.all(Array.from({ length: Math.min(limit, items.length) }, worker));
+  return results;
+}
+
+/**
+ * Monta o índice completo da Pokédex com 19 requisições leves
+ * (1 lista de nomes + 18 tipos), em vez de 1 requisição pesada por pokémon.
+ * Depois disso, busca, filtro e paginação rodam 100% local.
+ */
+async function fetchDexIndex(): Promise<IndexEntry[]> {
+  const list = await withRetry(() => PokemonAPI.getPokemonList(0, 100000));
+  const typeData = await mapWithConcurrency(POKEMON_TYPES, 3, type =>
+    withRetry(() => PokemonAPI.getPokemonByType(type))
+  );
+
+  const typesById = new Map<number, { name: string; slot: number }[]>();
+  typeData.forEach(type => {
+    type.pokemon.forEach(({ pokemon, slot }) => {
+      const id = PokemonAPI.extractIdFromUrl(pokemon.url);
+      if (id >= MAX_SPECIES_ID) return;
+      const entry = typesById.get(id) ?? [];
+      entry.push({ name: type.name, slot });
+      typesById.set(id, entry);
+    });
+  });
+
+  return list.results
+    .map(p => ({ id: PokemonAPI.extractIdFromUrl(p.url), name: p.name }))
+    .filter(p => p.id < MAX_SPECIES_ID)
+    .sort((a, b) => a.id - b.id)
+    .map(p => ({
+      ...p,
+      types: (typesById.get(p.id) ?? [])
+        .sort((a, b) => a.slot - b.slot)
+        .map(t => t.name),
+    }));
+}
+
+// Uma única carga por sessão (evita requisições duplicadas, ex.: StrictMode em dev)
+let dexIndexPromise: Promise<IndexEntry[]> | null = null;
+function loadDexIndexOnce() {
+  dexIndexPromise ??= fetchDexIndex().catch(error => {
+    dexIndexPromise = null;
+    throw error;
+  });
+  return dexIndexPromise;
+}
+
 export default function Home() {
   const { theme, toggleTheme } = useTheme();
-  const [allPokemons, setAllPokemons] = useState<PokemonCardData[]>([]);
-  const [searchResults, setSearchResults] = useState<PokemonCardData[]>([]);
   const [selectedPokemon, setSelectedPokemon] = useState<PokemonDetailData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [isLoadingDetail, setIsLoadingDetail] = useState(false);
-  const [isSearching, setIsSearching] = useState(false);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [totalAvailable, setTotalAvailable] = useState(0);
-  
+  // Detalhes já abertos ficam em memória para não refazer a requisição
+  const detailCache = useRef(new Map<number, PokemonDetailData>());
+
+  // Índice com TODOS os pokémons (id, nome, tipos). Filtro e paginação rodam sobre ele.
+  const [pokemonIndex, setPokemonIndex] = useState<IndexEntry[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
   // Search and filters
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedQuery, setDebouncedQuery] = useState('');
   const [selectedTypes, setSelectedTypes] = useState<string[]>([]);
-  
+
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(12);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  const { favorites } = useFavorites();
+  useFavorites();
 
-  // Load initial pokemon data
+  // Carrega o índice: do cache se válido, senão da API (e salva no cache)
   useEffect(() => {
-    const loadPokemons = async () => {
-      try {
-        setIsLoading(true);
-        
-        // Verificar se já tem dados no localStorage
-        const cachedPokemons = localStorage.getItem('cached-pokemons');
-        const cacheTimestamp = localStorage.getItem('cached-pokemons-timestamp');
-        const cachedTotal = localStorage.getItem('cached-total-pokemons');
-        const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 horas em milissegundos
-        
-        // Se tem cache válido (menos de 24h), usar ele
-        if (cachedPokemons && cacheTimestamp && cachedTotal) {
-          const timestamp = parseInt(cacheTimestamp);
-          const now = Date.now();
-          
-          if (now - timestamp < CACHE_DURATION) {
-            const pokemonCards = JSON.parse(cachedPokemons);
-            setAllPokemons(pokemonCards);
-            setTotalAvailable(parseInt(cachedTotal));
-            setIsLoading(false);
-            return;
-          }
-        }
-        
-        // Buscar informações gerais para saber o total
-        const initialList = await PokemonAPI.getPokemonList(0, 1);
-        setTotalAvailable(initialList.count);
-        localStorage.setItem('cached-total-pokemons', initialList.count.toString());
-        
-        // Carregar apenas os primeiros 151 pokémons (Geração 1) inicialmente
-        const INITIAL_LOAD = 151;
-        const pokemonList = await PokemonAPI.getPokemonList(0, INITIAL_LOAD);
-        
-        // Carregar em lotes de 20 para não sobrecarregar
-        const BATCH_SIZE = 20;
-        const validPokemons: PokemonCardData[] = [];
-        
-        for (let i = 0; i < pokemonList.results.length; i += BATCH_SIZE) {
-          const batch = pokemonList.results.slice(i, i + BATCH_SIZE);
-          
-          const pokemonPromises = batch.map(async (pokemon) => {
-            try {
-              const pokemonData = await PokemonAPI.getPokemon(pokemon.name);
-              return convertPokemonToCard(pokemonData);
-            } catch (error) {
-              console.error(`Failed to load pokemon ${pokemon.name}:`, error);
-              return null;
-            }
-          });
-          
-          const batchResults = await Promise.all(pokemonPromises);
-          const validBatch = batchResults.filter(p => p !== null) as PokemonCardData[];
-          validPokemons.push(...validBatch);
-          
-          // Atualizar UI incrementalmente
-          setAllPokemons([...validPokemons]);
-        }
-        
-        // Salvar no localStorage
-        localStorage.setItem('cached-pokemons', JSON.stringify(validPokemons));
-        localStorage.setItem('cached-pokemons-timestamp', Date.now().toString());
-        
-      } catch (error) {
-        console.error('Failed to load pokemons:', error);
-        
-        // Em caso de erro, tentar usar o cache mesmo que expirado
-        const cachedPokemons = localStorage.getItem('cached-pokemons');
-        const cachedTotal = localStorage.getItem('cached-total-pokemons');
-        if (cachedPokemons) {
-          const pokemonCards = JSON.parse(cachedPokemons);
-          setAllPokemons(pokemonCards);
-        }
-        if (cachedTotal) {
-          setTotalAvailable(parseInt(cachedTotal));
-        }
-      } finally {
-        setIsLoading(false);
-      }
-    };
+    // Remove o cache antigo (lista de cards pesada) que não é mais usado
+    LEGACY_CACHE_KEYS.forEach(key => {
+      try { localStorage.removeItem(key); } catch { /* ignore */ }
+    });
 
-    loadPokemons();
+    const cached = readCache<IndexEntry[]>(DEX_CACHE_KEY);
+    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+      setPokemonIndex(cached.data);
+      setIsLoading(false);
+      return;
+    }
+
+    loadDexIndexOnce()
+      .then(entries => {
+        setPokemonIndex(entries);
+        writeCache(DEX_CACHE_KEY, entries);
+      })
+      .catch(error => {
+        console.error('Failed to load pokedex index:', error);
+        // Sem internet/API fora: usa o cache mesmo expirado
+        if (cached) {
+          setPokemonIndex(cached.data);
+        } else {
+          setLoadError('Não foi possível carregar a lista de pokémons.');
+        }
+      })
+      .finally(() => setIsLoading(false));
   }, []);
 
-  // Search for pokemon by name or ID in the API when not found locally
+  // Debounce curto da busca (o filtro é local, então pode ser rápido)
   useEffect(() => {
-    const searchPokemon = async () => {
-      const query = searchQuery.trim();
-      
-      // Se não tem busca, limpar resultados
-      if (!query) {
-        setSearchResults([]);
-        return;
-      }
+    const timer = setTimeout(() => setDebouncedQuery(searchQuery.trim().toLowerCase()), 200);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
 
-      // Resetar para primeira página quando pesquisar
-      setCurrentPage(1);
+  // Aplica busca + filtros de tipo sobre o índice completo
+  const filteredEntries = useMemo(() => {
+    let result = pokemonIndex;
 
-      // Primeiro buscar nos pokémons já carregados
-      const localResults = allPokemons.filter(pokemon => 
-        pokemon.name.toLowerCase().includes(query.toLowerCase()) ||
-        pokemon.id.toString().includes(query)
+    if (debouncedQuery) {
+      result = result.filter(p =>
+        p.name.includes(debouncedQuery) || p.id.toString().includes(debouncedQuery)
       );
-
-      // Se encontrou resultados locais e não tem filtro de tipo, usar eles
-      if (localResults.length > 0 && selectedTypes.length === 0) {
-        setSearchResults(localResults);
-        return;
-      }
-
-      // Se a busca parece ser um nome ou ID específico, tentar buscar na API
-      if (query.length >= 3 || !isNaN(Number(query))) {
-        try {
-          setIsSearching(true);
-          const pokemonData = await PokemonAPI.getPokemon(query.toLowerCase());
-          const pokemonCard = convertPokemonToCard(pokemonData);
-          
-          // Verificar se atende aos filtros de tipo
-          if (selectedTypes.length === 0 || selectedTypes.every(type => pokemonCard.types.includes(type))) {
-            // Combinar resultado da API com resultados locais (sem duplicatas)
-            const combinedResults = localResults.filter(p => p.id !== pokemonCard.id);
-            combinedResults.unshift(pokemonCard);
-            setSearchResults(combinedResults);
-          } else {
-            setSearchResults(localResults);
-          }
-        } catch (error) {
-          // Se não encontrou na API, usar apenas resultados locais
-          setSearchResults(localResults);
-        } finally {
-          setIsSearching(false);
-        }
-      } else {
-        setSearchResults(localResults);
-      }
-    };
-
-    const debounceTimer = setTimeout(searchPokemon, 300);
-    return () => clearTimeout(debounceTimer);
-  }, [searchQuery, selectedTypes, allPokemons]);
-
-  // Filter pokemons based on type filters (when no search)
-  const filteredPokemons = useMemo(() => {
-    // Se tem busca, usar searchResults
-    if (searchQuery.trim()) {
-      return searchResults;
     }
 
-    let filtered = allPokemons;
-
-    // Apply type filters
     if (selectedTypes.length > 0) {
-      filtered = filtered.filter(pokemon =>
-        selectedTypes.every(type => pokemon.types.includes(type))
-      );
+      result = result.filter(p => selectedTypes.every(type => p.types.includes(type)));
     }
 
-    return filtered;
-  }, [allPokemons, selectedTypes, searchQuery, searchResults]);
+    return result;
+  }, [pokemonIndex, debouncedQuery, selectedTypes]);
 
-  // Load more pokemons function
-  const loadMorePokemons = async () => {
-    if (isLoadingMore || allPokemons.length >= totalAvailable) return;
-    
-    try {
-      setIsLoadingMore(true);
-      
-      const currentCount = allPokemons.length;
-      const LOAD_MORE = 50; // Carregar mais 50 por vez
-      
-      const pokemonList = await PokemonAPI.getPokemonList(currentCount, LOAD_MORE);
-      
-      const pokemonPromises = pokemonList.results.map(async (pokemon) => {
-        try {
-          const pokemonData = await PokemonAPI.getPokemon(pokemon.name);
-          return convertPokemonToCard(pokemonData);
-        } catch (error) {
-          console.error(`Failed to load pokemon ${pokemon.name}:`, error);
-          return null;
-        }
-      });
-      
-      const newPokemons = await Promise.all(pokemonPromises);
-      const validNewPokemons = newPokemons.filter(p => p !== null) as PokemonCardData[];
-      
-      const updatedPokemons = [...allPokemons, ...validNewPokemons];
-      setAllPokemons(updatedPokemons);
-      
-      // Atualizar cache
-      localStorage.setItem('cached-pokemons', JSON.stringify(updatedPokemons));
-      localStorage.setItem('cached-pokemons-timestamp', Date.now().toString());
-      
-    } catch (error) {
-      console.error('Failed to load more pokemons:', error);
-    } finally {
-      setIsLoadingMore(false);
-    }
-  };
-
-  // Check if we need to load more when reaching end of current list
-  useEffect(() => {
-    if (!searchQuery && selectedTypes.length === 0 && !isLoadingMore) {
-      const isNearEnd = currentPage >= Math.ceil(allPokemons.length / itemsPerPage) - 1;
-      const hasMore = allPokemons.length < totalAvailable;
-      
-      if (isNearEnd && hasMore) {
-        loadMorePokemons();
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPage, allPokemons.length, totalAvailable, searchQuery, selectedTypes, itemsPerPage, isLoadingMore]);
-
-  // Pagination calculations
-  const totalPages = Math.ceil(filteredPokemons.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentPokemons = filteredPokemons.slice(startIndex, startIndex + itemsPerPage);
-
-  // Reset to first page when filters change
+  // Volta para a página 1 quando busca, filtros ou itens por página mudam
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, selectedTypes, itemsPerPage]);
+  }, [debouncedQuery, selectedTypes, itemsPerPage]);
 
-  // Handle pokemon selection for details
-  const handlePokemonSelect = async (pokemon: PokemonCardData) => {
-    if (selectedPokemon?.id === pokemon.id) return;
-    
-    try {
-      setIsLoadingDetail(true);
-      const pokemonData = await PokemonAPI.getPokemon(pokemon.id);
-      const detailData = convertPokemonToDetail(pokemonData);
-      setSelectedPokemon(detailData);
-    } catch (error) {
-      console.error('Failed to load pokemon details:', error);
-    } finally {
-      setIsLoadingDetail(false);
-    }
+  // Pagination calculations (página sempre dentro do intervalo válido)
+  const totalPages = Math.max(1, Math.ceil(filteredEntries.length / itemsPerPage));
+  const safePage = Math.min(currentPage, totalPages);
+  const startIndex = (safePage - 1) * itemsPerPage;
+  const currentPokemons: PokemonCardData[] = useMemo(
+    () =>
+      filteredEntries.slice(startIndex, startIndex + itemsPerPage).map(p => ({
+        id: p.id,
+        name: p.name,
+        types: p.types,
+        image: artworkUrl(p.id),
+      })),
+    [filteredEntries, startIndex, itemsPerPage]
+  );
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    scrollRef.current?.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Handle pokemon selection by ID (for evolution chain clicks)
+  const isFiltering = Boolean(debouncedQuery) || selectedTypes.length > 0;
+  const showSkeleton = isLoading;
+
+  // Abre os detalhes (com cache em memória)
   const handlePokemonSelectById = async (pokemonId: number) => {
     if (selectedPokemon?.id === pokemonId) return;
-    
+
+    const cachedDetail = detailCache.current.get(pokemonId);
+    if (cachedDetail) {
+      setSelectedPokemon(cachedDetail);
+      return;
+    }
+
     try {
       setIsLoadingDetail(true);
       const pokemonData = await PokemonAPI.getPokemon(pokemonId);
       const detailData = convertPokemonToDetail(pokemonData);
+      detailCache.current.set(pokemonId, detailData);
       setSelectedPokemon(detailData);
     } catch (error) {
       console.error('Failed to load pokemon details:', error);
@@ -288,6 +246,8 @@ export default function Home() {
       setIsLoadingDetail(false);
     }
   };
+
+  const handlePokemonSelect = (pokemon: PokemonCardData) => handlePokemonSelectById(pokemon.id);
 
   return (
     <div className="flex flex-col h-screen bg-zinc-50 dark:bg-zinc-900">
@@ -308,11 +268,11 @@ export default function Home() {
                 />
 
                 {/* Results Summary */}
-                {!isLoading && !isSearching && filteredPokemons.length > 0 && (
+                {!isLoading && !loadError && (
                   <div className="text-sm text-zinc-600 dark:text-zinc-400">
-                    {searchQuery.trim() 
-                      ? `${filteredPokemons.length} pokémons encontrados`
-                      : `${allPokemons.length} de ${totalAvailable} pokémons carregados`
+                    {isFiltering
+                      ? `${filteredEntries.length} pokémons encontrados`
+                      : `${pokemonIndex.length} pokémons`
                     }
                   </div>
                 )}
@@ -325,20 +285,18 @@ export default function Home() {
                   </div>
                 )}
 
-                {/* Searching State */}
-                {isSearching && (
-                  <div className="text-sm text-zinc-600 dark:text-zinc-400 flex items-center gap-2">
-                    <LoadingSpinner size="sm" />
-                    Buscando pokémon...
+                {loadError && (
+                  <div className="text-sm text-red-600 dark:text-red-400">
+                    {loadError}
                   </div>
                 )}
               </div>
 
               {/* Scrollable Content */}
-              <div className="flex-1 overflow-y-auto overflow-x-hidden pr-2 space-y-6">
+              <div ref={scrollRef} className="flex-1 overflow-y-auto overflow-x-hidden pr-2 space-y-6">
                 {/* Pokemon Grid or Skeleton */}
-                {isLoading ? (
-                  <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+                {showSkeleton ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mt-1">
                     {Array.from({ length: 12 }).map((_, index) => (
                       <div
                         key={index}
@@ -364,40 +322,19 @@ export default function Home() {
                       selectedPokemonId={selectedPokemon?.id}
                     />
 
-                    {/* Pagination */}
-                    {totalPages > 1 && (
-                      <PokemonPagination
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        itemsPerPage={itemsPerPage}
-                        totalItems={filteredPokemons.length}
-                        onPageChange={setCurrentPage}
-                        onItemsPerPageChange={setItemsPerPage}
-                      />
-                    )}
-
-                    {/* Loading More Indicator */}
-                    {isLoadingMore && (
-                      <div className="flex items-center justify-center py-8">
-                        <div className="text-sm text-zinc-600 dark:text-zinc-400 flex items-center gap-2">
-                          <LoadingSpinner size="sm" />
-                          Carregando mais pokémons...
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Load More Button (optional - if not auto-loading) */}
-                    {!isLoadingMore && allPokemons.length < totalAvailable && !searchQuery && selectedTypes.length === 0 && (
-                      <div className="flex items-center justify-center py-4">
-                        <button
-                          onClick={loadMorePokemons}
-                          className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
-                        >
-                          Carregar mais pokémons ({allPokemons.length} de {totalAvailable})
-                        </button>
-                      </div>
-                    )}
                   </>
+                )}
+
+                {/* Pagination (fica visível também durante o carregamento da página) */}
+                {!isLoading && filteredEntries.length > 0 && (
+                  <PokemonPagination
+                    currentPage={safePage}
+                    totalPages={totalPages}
+                    itemsPerPage={itemsPerPage}
+                    totalItems={filteredEntries.length}
+                    onPageChange={handlePageChange}
+                    onItemsPerPageChange={setItemsPerPage}
+                  />
                 )}
               </div>
             </div>

@@ -40,16 +40,17 @@ export function PokemonPagination({
   };
 
   const getPageNumbers = () => {
-    const pages = [];
+    const pages: (number | '...')[] = [];
     const maxVisible = 5;
-    
+
     if (totalPages <= maxVisible) {
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
       }
     } else {
-      const start = Math.max(1, currentPage - 2);
-      const end = Math.min(totalPages, start + maxVisible - 1);
+      // Mantém sempre 5 páginas visíveis, inclusive perto do fim
+      const start = Math.max(1, Math.min(currentPage - 2, totalPages - maxVisible + 1));
+      const end = start + maxVisible - 1;
       
       if (start > 1) {
         pages.push(1);
@@ -69,7 +70,7 @@ export function PokemonPagination({
     return pages;
   };
 
-  if (totalPages <= 1) return null;
+  if (totalItems === 0) return null;
 
   return (
     <div className={cn('flex flex-col sm:flex-row items-center justify-between gap-4 p-4 bg-white dark:bg-zinc-800 border-t border-zinc-200 dark:border-zinc-700', className)}>
@@ -96,7 +97,7 @@ export function PokemonPagination({
       </div>
 
       {/* Pagination controls */}
-      <div className="flex items-center gap-1">
+      <div className={cn('flex items-center gap-1', totalPages <= 1 && 'invisible')}>
         <button
           onClick={handlePrevious}
           disabled={currentPage === 1}
@@ -112,7 +113,7 @@ export function PokemonPagination({
 
         {getPageNumbers().map((page, index) => (
           <button
-            key={index}
+            key={page === '...' ? `ellipsis-${index}` : page}
             onClick={() => typeof page === 'number' && onPageChange(page)}
             disabled={page === '...'}
             className={cn(
